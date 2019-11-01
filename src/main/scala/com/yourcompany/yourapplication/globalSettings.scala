@@ -17,6 +17,12 @@ object globalSettings {
    Global.IMPALA_Setting.append(new huemul_KeyValuePath("experimental","jdbc:impala://{{000.000.000.000}}:21050/default"))
    
    /**
+    *NEW FROM 2.1 
+    */
+   
+   Global.HIVE_HourToUpdateMetadata = 2 //Numero de horas para guardar cache de metadata de hive, disminuye tiempo de respuesta en 1 minuto aproximadamente, dependiendo del tamaño del cluster.
+   
+   /**
     *NEW FROM 2.0 
     */
    
