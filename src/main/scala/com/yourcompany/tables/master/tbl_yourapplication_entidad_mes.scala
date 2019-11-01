@@ -24,8 +24,15 @@ class tbl_yourapplication_entidad_mes(huemulBigDataGov: huemul_BigDataGovernance
   this.setPartitionField("periodo_mes")
   //Frecuencia de actualización de los datos
   this.setFrequency(huemulType_Frequency.MONTHLY)
-  
+  //nuevo desde version 2.0
+  //permite guardar versiones de los datos antes de que se vuelvan a ejecutar los procesos (solo para tablas de tipo master y reference)
+  this.setSaveBackup(false)
+  //nuevo desde versión 2.1
+  //permite asignar un código de error personalizado al fallar la PK
+  this.setPK_externalCode("COD_ERROR")
+    
   /**********   O P T I M I Z A C I O N  ****************************************/
+  //nuevo desde version 2.0
   //Indica la cantidad de particiones al guardar un archivo, para archivos pequeños (menor al bloque de HDFS) se 
   //recomienda el valor 1, mientras mayor la tabla la cantidad de particiones debe ser mayor para aprovechar el paralelismo
   //this.setNumPartitions(1)
@@ -62,55 +69,54 @@ class tbl_yourapplication_entidad_mes(huemulBigDataGov: huemul_BigDataGovernance
 
     //Columna de periodo
   val periodo_mes = new huemul_Columns (StringType, true,"periodo de los datos")
-  periodo_mes.setIsPK(true)
-  periodo_mes.setBusinessGlossary_Id("BG001")  
+            .setIsPK().setBusinessGlossary("BG001")  
     
   val ejemplo_producto_id = new huemul_Columns (IntegerType, true, "codigo del producto") 
-  ejemplo_producto_id.setARCO_Data(false)  
-  ejemplo_producto_id.setSecurityLevel(huemulType_SecurityLevel.Public)  
-  //ejemplo_producto_id.setDQ_MinDecimalValue(Decimal.apply(0))  
-  //ejemplo_producto_id.setDQ_MaxDecimalValue(Decimal.apply(200.34))  
-
+          .securityLevel(huemulType_SecurityLevel.Public)  
+  
   val fecha_venta = new huemul_Columns (StringType, true, "fecha de la venta") 
-  fecha_venta.setARCO_Data(false)  
-  fecha_venta.setSecurityLevel(huemulType_SecurityLevel.Public)  
-  //fecha_venta.setDQ_MinLen(5) 
-  //fecha_venta.setDQ_MaxLen(100)  
+          .securityLevel(huemulType_SecurityLevel.Public)  
 
   val cantidad = new huemul_Columns (DecimalType(10,2), true, "Cantidad del producto") 
-  cantidad.setARCO_Data(false)  
-  cantidad.setSecurityLevel(huemulType_SecurityLevel.Public)  
+          .securityLevel(huemulType_SecurityLevel.Public)  
 
   val precio = new huemul_Columns (DecimalType(10,2), true, "Precio de la transaccion") 
-  precio.setARCO_Data(false)  
-  precio.setSecurityLevel(huemulType_SecurityLevel.Public)  
+          .securityLevel(huemulType_SecurityLevel.Public)  
 
 
 
-  //**********Atributos adicionales de DataQuality
-  //yourColumn.setIsPK(true)     //valor por default en cada campo es false
-  //yourColumn.setIsUnique(true) //valor por default en cada campo es false
-  //yourColumn.setNullable(true) //valor por default en cada campo es false
-  //yourColumn.setIsUnique(true) //valor por default en cada campo es false
-  //yourColumn.setDQ_MinDecimalValue(Decimal.apply(0))
-  //yourColumn.setDQ_MaxDecimalValue(Decimal.apply(200.0))
-  //yourColumn.setDQ_MinDateTimeValue("2018-01-01")
-  //yourColumn.setDQ_MaxDateTimeValue("2018-12-31")
-  //yourColumn.setDQ_MinLen(5)
-  //yourColumn.setDQ_MaxLen(100)
-  //yourColumn.setDQ_RegExp("")                          //desde versión 2.0
-  //yourColumn.setDefaultValue("'string'") // "10" // "'2018-01-01'"
+  //**********Atributos adicionales de DataQuality 
+  /*
+            .setIsPK()         //por default los campos no son PK
+            .setIsUnique("COD_ERROR") //por default los campos pueden repetir sus valores
+            .setNullable() //por default los campos no permiten nulos
+            .setDQ_MinDecimalValue(Decimal.apply(0),"COD_ERROR")
+            .setDQ_MaxDecimalValue(Decimal.apply(200.0),"COD_ERROR")
+            .setDQ_MinDateTimeValue("2018-01-01","COD_ERROR")
+            .setDQ_MaxDateTimeValue("2018-12-31","COD_ERROR")
+            .setDQ_MinLen(5,"COD_ERROR")
+            .setDQ_MaxLen(100,"COD_ERROR")
+            .setDQ_RegExpresion("","COD_ERROR")                          //desde versión 2.0
+  */
   //**********Atributos adicionales para control de cambios en los datos maestros
-  //yourColumn.setMDM_EnableDTLog(true)
-  //yourColumn.setMDM_EnableOldValue(true)
-  //yourColumn.setMDM_EnableProcessLog(true)
-  //yourColumn.setMDM_EnableOldValue_FullTrace(true)     //desde 2.0: guarda cada cambio de la tabla maestra en tabla de trace
+  /*
+   					.setMDM_EnableDTLog()
+  					.setMDM_EnableOldValue()
+  					.setMDM_EnableProcessLog()
+  					.setMDM_EnableOldValue_FullTrace()     //desde 2.0: guarda cada cambio de la tabla maestra en tabla de trace
+  */
   //**********Otros atributos de clasificación
-  //yourColumn.setEncryptedType("tipo")
-  //yourColumn.setARCO_Data(true)
-  //yourColumn.setSecurityLevel(huemulType_SecurityLevel.Public)
-  //yourColumn.setBusinessGlossary_Id("BG_ID")           //desde 2.0: enlaza id de glosario de términos con campos de la tabla
-   
+  /*
+  					.encryptedType("tipo")
+  					.setARCO_Data()
+  					.securityLevel(huemulType_SecurityLevel.Public)
+  					.setBusinessGlossary("CODIGO")           //desde 2.0: enlaza id de glosario de términos con campos de la tabla
+  */
+  //**********Otros atributos
+  /*
+            .setDefaultValues("'string'") // "10" // "'2018-01-01'"
+  				  .encryptedType("tipo")
+  */
   
   //**********Ejemplo para aplicar DataQuality de Integridad Referencial
   //val i[[tbl_PK]] = new [[tbl_PK]](huemulBigDataGov,Control)
